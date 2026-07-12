@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
   <title>ግሎባል ቪው ኢቲ | Global View ET</title>
   
-  <!-- Netlify Identity -->
+  <!-- Netlify Identity (ለመግቢያ ገጽ ደህንነት) -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
   <!-- Tailwind CSS + Google Fonts -->
@@ -79,7 +79,7 @@
   <header class="bg-white dark:bg-slate-800 shadow-sm sticky top-0 z-50 dark-transition border-b border-slate-200 dark:border-slate-700">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between flex-wrap gap-3">
       
-      <!-- Logo & Brand -->
+      <!-- Logo & Brand (የተቋሙ ፎቶ ሎጎ እዚህ ጋር ተስተካክሏል) -->
       <div class="flex items-center gap-2 flex-shrink-0">
         <img src="photo_2026-03-31_08-48-12.jpg" alt="Global View ET Logo" class="w-9 h-9 rounded-lg object-cover shadow-md">
         <div class="leading-tight">
@@ -159,6 +159,7 @@
         <h2 class="text-2xl font-bold text-slate-800 dark:text-white amharic">የቅርብ ጊዜ ዜናዎች</h2>
       </div>
       
+      <!-- ይህ ዲቭ በጃቫስክሪፕት አማካኝነት ዜናዎችን ይቀበላል -->
       <div id="newsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <div class="col-span-full text-center py-10">
           <p class="text-lg text-slate-500 amharic">ዜናዎች በመጫን ላይ ናቸው...</p>
@@ -280,23 +281,31 @@
             sortedPosts.forEach((post, index) => {
               if (!post || !post.title) return;
               
+              // እውነተኛውን የዜናውን መለያ ቁጥር (Index) ያኛል
+              const originalIndex = data.posts.indexOf(post);
+              
               const card = document.createElement('div');
               card.className = "news-card bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-md border border-slate-100 dark:border-slate-700 flex flex-col";
               
               const imageUrl = post.image ? post.image : "https://placehold.co/600x400/1e293b/white?text=Global+View+ET";
               
+              // ሊንኮቹ እዚህ ጋር ወደ post.html?id=X እንዲወስዱ ተስተካክለዋል
               card.innerHTML = `
-                <img src="${imageUrl}" alt="${post.title}" class="h-48 w-full object-cover">
+                <a href="post.html?id=${originalIndex}">
+                  <img src="${imageUrl}" alt="${post.title}" class="h-48 w-full object-cover cursor-pointer">
+                </a>
                 <div class="p-4 flex flex-col gap-2 flex-1">
                   <span class="text-xs font-bold text-accent uppercase english">${post.category || 'ዜና'}</span>
-                  <h3 class="font-bold text-lg amharic leading-snug">${post.title}</h3>
+                  <a href="post.html?id=${originalIndex}">
+                    <h3 class="font-bold text-lg amharic leading-snug hover:text-accent cursor-pointer">${post.title}</h3>
+                  </a>
                   <p class="text-sm text-slate-600 dark:text-slate-400 amharic line-clamp-2">${post.description || ''}</p>
                   <div class="text-xs text-slate-400 flex justify-between items-center mt-2">
                     <span>👤 ${post.author || 'ዘጋቢ'}</span>
                     <span>📅 ${post.date || ''}</span>
                   </div>
                   <div class="mt-auto pt-2">
-                    <a href="#" class="text-accent font-medium text-sm hover:underline amharic">ተጨማሪ ያንብቡ →</a>
+                    <a href="post.html?id=${originalIndex}" class="text-accent font-medium text-sm hover:underline amharic">ተጨማሪ ያንብቡ →</a>
                   </div>
                 </div>
               `;
@@ -308,7 +317,9 @@
                 sidebarItem.innerHTML = `
                   <span class="text-accent font-bold text-xl">0${index + 1}</span>
                   <div>
-                    <h4 class="font-semibold text-sm amharic hover:text-accent cursor-pointer">${post.title}</h4>
+                    <a href="post.html?id=${originalIndex}">
+                      <h4 class="font-semibold text-sm amharic hover:text-accent cursor-pointer">${post.title}</h4>
+                    </a>
                     <span class="text-xs text-slate-500">${post.date || ''}</span>
                   </div>
                 `;
