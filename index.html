@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="am" dir="ltr">
 <head>
+  <!-- OneSignal የኖቲፊኬሽን ደወል ስክሪፕት -->
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "7b8d0eab-1e31-48dc-80e2-82831fa0f076",
+    });
+  });
+</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
   <title>ግሎባል ቪው ኢቲ | Global View ET</title>
