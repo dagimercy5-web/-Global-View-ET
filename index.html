@@ -1,15 +1,120 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Global View ET - Admin Dashboard</title>
-    <!-- Netlify Identity (ለመግቢያ ገጽ ደህንነት) -->
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  </head>
-  <body>
-    <!-- Decap CMS ሲስተሙን የሚጭን ፋይል -->
-    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-  </body>
-</html>
+<html lang="am" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>ግሎባል ቪው ኢቲ | Global View ET</title>
+  
+  <!-- Netlify Identity (ለመግቢያ ገጽ ደህንነት) -->
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
+  <!-- Tailwind CSS + Google Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=Noto+Sans+Ethiopic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Inter', 'Noto Sans Ethiopic', sans-serif;
+      transition: background-color 0.3s ease, color 0.2s ease;
+    }
+    .amharic {
+      font-family: 'Noto Sans Ethiopic', 'Inter', sans-serif;
+      line-height: 1.8;
+      letter-spacing: 0.02em;
+    }
+    .english {
+      font-family: 'Inter', 'Noto Sans Ethiopic', sans-serif;
+    }
+    .dark-transition {
+      transition: background-color 0.25s ease, border-color 0.25s ease, color 0.2s ease;
+    }
+    @keyframes ticker-scroll {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+    .ticker-wrap {
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .ticker-content {
+      display: inline-block;
+      animation: ticker-scroll 25s linear infinite;
+      padding-left: 100%;
+    }
+    .ticker-content:hover {
+      animation-play-state: paused;
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 30px -10px rgba(0,0,0,0.1), 0 8px 15px -5px rgba(0,0,0,0.05);
+      transition: all 0.25s ease;
+    }
+    .news-card {
+      transition: all 0.2s ease;
+    }
+  </style>
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#0f172a',
+            accent: '#ef4444',
+            lightBg: '#f8fafc',
+            darkBg: '#0f172a',
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-200 transition-colors duration-300">
+
+  <!-- HEADER -->
+  <header class="bg-white dark:bg-slate-800 shadow-sm sticky top-0 z-50 dark-transition border-b border-slate-200 dark:border-slate-700">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between flex-wrap gap-3">
+      
+      <!-- Logo & Brand (የተቋሙ ፎቶ ሎጎ እዚህ ጋር ተስተካክሏል) -->
+      <div class="flex items-center gap-2 flex-shrink-0">
+        <img src="photo_2026-03-31_08-48-12.jpg" alt="Global View ET Logo" class="w-9 h-9 rounded-lg object-cover shadow-md">
+        <div class="leading-tight">
+          <span class="text-xl font-bold text-primary dark:text-white english tracking-tight">Global View ET</span>
+          <span class="block text-sm font-semibold text-slate-600 dark:text-slate-300 amharic">ግሎባል ቪው ኢቲ</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3 md:gap-4 flex-wrap">
+        <div class="hidden sm:flex relative">
+          <input type="text" id="searchInput" placeholder="ፈልግ / Search..." class="pl-8 pr-3 py-1.5 rounded-full text-sm bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-accent w-40 md:w-56 text-slate-700 dark:text-slate-200 placeholder-slate-400 amharic">
+          <svg class="w-4 h-4 absolute left-2.5 top-2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        </div>
+
+        <div class="flex items-center gap-1 text-sm font-medium bg-slate-100 dark:bg-slate-700 rounded-full p-0.5">
+          <button id="langAm" class="px-3 py-1 rounded-full bg-accent text-white shadow amharic transition">አማ</button>
+          <button id="langEn" class="px-3 py-1 rounded-full text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition english">EN</button>
+        </div>
+
+        <button id="darkToggle" class="p-2 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-yellow-300 hover:scale-105 transition">
+          <svg id="sunIcon" class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+          <svg id="moonIcon" class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+        </button>
+
+        <button id="mobileMenuBtn" class="md:hidden p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        </button>
+      </div>
+    </div>
+
+    <nav id="mainNav" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-2 md:pb-0 hidden md:flex flex-col md:flex-row md:items-center gap-1 md:gap-6 text-sm font-semibold border-t border-slate-200 dark:border-slate-700 pt-2 md:pt-0 md:border-t-0">
+      <a href="#" class="px-3 py-2 rounded-md text-accent hover:bg-slate-100 dark:hover:bg-slate-700 amharic">ዋና ገጽ</a>
+      <a href="#" class="px-3 py-2 rounded-md hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-700 amharic">ሃገር አቀፍ</a>
+      <a href="#" class="px-3 py-2 rounded-md hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-700 amharic">ፖለቲካ</a>
+      <a href="#" class="px-3 py-2 rounded-md hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-700 amharic">ኢኮኖሚ</a>
+      <a href="#" class="px-3 py-2 rounded-md hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-700 amharic">ቴክኖሎጂ</a>
+      <a href="#" class="px-3 py-2 rounded-md hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-700 amharic">ስፖርት</a>
+      <a href="#" class
