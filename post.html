@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="am" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>ዝርዝር ዜና | Global View ET</title>
+  
+  <!-- Netlify Identity -->
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
+  <!-- Tailwind CSS + Google Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=Noto+Sans+Ethiopic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Inter', 'Noto Sans Ethiopic', sans-serif;
+      transition: background-color 0.3s ease, color 0.2s ease;
+    }
+    .amharic {
+      font-family: 'Noto Sans Ethiopic', 'Inter', sans-serif;
+      line-height: 1.8;
+      letter-spacing: 0.02em;
+    }
+    .english {
+      font-family: 'Inter', 'Noto Sans Ethiopic', sans-serif;
+    }
+  </style>
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#0f172a',
+            accent: '#ef4444',
+            lightBg: '#f8fafc',
+            darkBg: '#0f172a',
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-200 transition-colors duration-300">
+
+  <!-- HEADER -->
+  <header class="bg-white dark:bg-slate-800 shadow-sm sticky top-0 z-50 border-b border-slate-200 dark:border-slate-700">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between flex-wrap gap-3">
+      
+      <!-- Logo & Brand -->
+      <div class="flex items-center gap-2 flex-shrink-0">
+        <img src="photo_2026-03-31_08-48-12.jpg" alt="Global View ET Logo" class="w-9 h-9 rounded-lg object-cover shadow-md">
+        <div class="leading-tight">
+          <span class="text-xl font-bold text-primary dark:text-white english tracking-tight">Global View ET</span>
+          <span class="block text-sm font-semibold text-slate-600 dark:text-slate-300 amharic">ግሎባል ቪው ኢቲ</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-1 text-sm font-medium bg-slate-100 dark:bg-slate-700 rounded-full p-0.5">
+        <a href="index.html" class="px-4 py-1.5 rounded-full bg-accent text-white shadow amharic transition text-xs font-semibold">← ወደ ዋና ገጽ</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT (ዜናው እዚህ ውስጥ ዳይናሚክ በሆነ መልኩ ይጫናል) -->
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div id="postContainer" class="bg-white dark:bg-slate-800 rounded-2xl p-6 md:p-10 shadow-md border border-slate-100 dark:border-slate-700">
+      <p class="text-center py-10 amharic text-slate-500">ዜናው በመጫን ላይ ነው...</p>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-slate-900 dark:bg-slate-950 text-slate-300 mt-12 border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-sm text-slate-400 amharic">
+      © 2026 Global View ET · መብቱ በህግ የተጠበቀ ነው።
+    </div>
+  </footer>
+
+  <!-- DYNAMIC POST LOADER SCRIPT -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // ከሊንኩ ላይ የዜናውን መለያ ቁጥር (ID) ያነባል
+      const urlParams = new URLSearchParams(window.location.search);
+      const postId = urlParams.get('id');
+      const postContainer = document.getElementById('postContainer');
+
+      if (!postContainer) return;
+
+      if (postId === null) {
+        postContainer.innerHTML = '<p class="text-center py-10 amharic text-red-500 font-semibold">ስህተት፦ ምንም ዜና አልተመረጠም።</p>';
+        return;
+      }
+
+      fetch('news.json')
+        .then(response => {
+          if (!response.ok) throw new Error('news.json መጫን አልተቻለም');
+          return response.json();
+        })
+        .then(data => {
+          const post = data.posts[parseInt(postId)];
+          if (post) {
+            document.title = `${post.title} | Global View ET`;
+            
+            // የዜናውን ሙሉ ጽሑፍ በየአንቀጹ ይከፋፍለዋል
+            const paragraphs = post.body.split('\n');
+            const bodyHTML = paragraphs.map(p => {
+              if (p.trim() === '') return '';
+              return `<p class="mb-4 amharic text-slate-700 dark:text-slate-300 leading-relaxed text-lg">${p}</p>`;
+            }).join('');
+
+            const imageUrl = post.image ? post.image : "https://placehold.co/1200x600/1e293b/white?text=Global+View+ET";
+
+            postContainer.innerHTML = `
+              <div>
+                <!-- Category & Date -->
+                <div class="flex items-center gap-3 mb-4">
+                  <span class="bg-accent text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">${post.category || 'ስፖርት'}</span>
+                  <span class="text-sm text-slate-400">📅 ${post.date || ''}</span>
+                </div>
+                
+                <!-- Title -->
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 amharic leading-tight text-slate-900 dark:text-white">${post.title}</h1>
+                
+                <!-- Author -->
+                <div class="text-sm text-slate-500 mb-6 amharic">👤 ዘጋቢ፦ <strong>${post.author || 'ዘጋቢ'}</strong></div>
+                
+                <!-- Main Image -->
+                <div class="rounded-2xl overflow-hidden mb-8 shadow-md">
+                  <img src="${imageUrl}" alt="${post.title}" class="w-full h-auto max-h-[500px] object-cover">
+                </div>
+                
+                <!-- Body Text -->
+                <div class="prose max-w-none mt-6">
+                  ${bodyHTML}
+                </div>
+                
+                <!-- Back Button -->
+                <div class="mt-10 border-t border-slate-200 dark:border-slate-700 pt-6">
+                  <a href="index.html" class="inline-flex items-center gap-2 bg-slate-900 dark:bg-slate-700 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-accent transition amharic">← ወደ ዋና ገጽ ተመለስ</a>
+                </div>
+              </div>
+            `;
+          } else {
+            postContainer.innerHTML = '<p class="text-center py-10 amharic text-red-500 font-semibold">ይቅርታ፣ የተፈለገው ዜና አልተገኘም።</p>';
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          postContainer.innerHTML = '<p class="text-center py-10 amharic text-red-500 font-semibold">ዜናውን መጫን አልተቻለም።</p>';
+        });
+    });
+  </script>
+</body>
+</html>
