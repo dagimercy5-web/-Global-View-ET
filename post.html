@@ -67,7 +67,7 @@
     </div>
   </header>
 
-  <!-- MAIN CONTENT (ዜናው እዚህ ውስጥ ዳይናሚክ በሆነ መልኩ ይጫናል) -->
+  <!-- MAIN CONTENT -->
   <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
     <div id="postContainer" class="bg-white dark:bg-slate-800 rounded-2xl p-6 md:p-10 shadow-md border border-slate-100 dark:border-slate-700">
       <p class="text-center py-10 amharic text-slate-500">ዜናው በመጫን ላይ ነው...</p>
@@ -84,7 +84,6 @@
   <!-- DYNAMIC POST LOADER SCRIPT -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // ከሊንኩ ላይ የዜናውን መለያ ቁጥር (ID) ያነባል
       const urlParams = new URLSearchParams(window.location.search);
       const postId = urlParams.get('id');
       const postContainer = document.getElementById('postContainer');
@@ -138,6 +137,40 @@
                 <div class="prose max-w-none mt-6">
                   ${bodyHTML}
                 </div>
+
+                <!-- ========== LIKE & SHARE BAR (አዲስ የተጨመረው ሼር እና ላይክ) ========== -->
+                <div class="flex flex-wrap items-center justify-between border-t border-b border-slate-200 dark:border-slate-700 py-4 my-8 gap-4">
+                  <div class="flex items-center gap-2">
+                    <button id="likeBtn" class="flex items-center gap-2 bg-slate-100 dark:bg-slate-700 hover:bg-red-100 dark:hover:bg-red-900/30 text-slate-600 dark:text-slate-300 px-4 py-2 rounded-full transition focus:outline-none">
+                      <span class="text-xl">❤️</span>
+                      <span id="likeCount" class="font-bold text-sm">0</span>
+                    </button>
+                  </div>
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <span class="text-sm font-semibold text-slate-500 dark:text-slate-400 amharic mr-1">አጋራ (Share)፦</span>
+                    <!-- Telegram -->
+                    <a id="shareTelegram" href="#" target="_blank" class="bg-sky-500 hover:scale-105 transition text-white px-4 py-2 rounded-full text-xs font-bold flex items-center gap-1.5">💬 Telegram</a>
+                    <!-- Facebook -->
+                    <a id="shareFacebook" href="#" target="_blank" class="bg-blue-600 hover:scale-105 transition text-white px-4 py-2 rounded-full text-xs font-bold flex items-center gap-1.5">📘 Facebook</a>
+                  </div>
+                </div>
+
+                <!-- ========== COMMENTS SECTION (አዲስ የተጨመረው የአስተያየት መስጫ) ========== -->
+                <div class="mt-10 border-t border-slate-200 dark:border-slate-700 pt-8">
+                  <h3 class="text-xl font-bold mb-4 amharic text-slate-900 dark:text-white">የአንባቢዎች አስተያየት (Comments)</h3>
+                  
+                  <!-- Comment Input Form -->
+                  <form id="commentForm" class="flex flex-col gap-3 mb-8">
+                    <input type="text" id="commenterName" required placeholder="ስምዎን ያስገቡ" class="px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-700 text-slate-800 dark:text-white amharic outline-none focus:ring-2 focus:ring-accent">
+                    <textarea id="commentText" required rows="3" placeholder="አስተያየትዎን እዚህ ይጻፉ..." class="px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-700 text-slate-800 dark:text-white amharic outline-none focus:ring-2 focus:ring-accent"></textarea>
+                    <button type="submit" class="bg-accent text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-red-600 transition w-fit amharic">አስተያየት ስጥ</button>
+                  </form>
+                  
+                  <!-- Comments List Container -->
+                  <div id="commentsList" class="space-y-4">
+                    <p class="text-sm text-slate-500 amharic" id="noComments">እስካሁን ምንም አስተያየት አልተሰጠም። የመጀመሪያው ይሁኑ!</p>
+                  </div>
+                </div>
                 
                 <!-- Back Button -->
                 <div class="mt-10 border-t border-slate-200 dark:border-slate-700 pt-6">
@@ -145,6 +178,80 @@
                 </div>
               </div>
             `;
+
+            // ---------- 1. SHARE LOGIC (ሊንኮቹን ዳይናሚክ ማድረግ) ----------
+            const currentUrl = encodeURIComponent(window.location.href);
+            const shareText = encodeURIComponent(post.title);
+            document.getElementById('shareTelegram').href = `https://t.me/share/url?url=${currentUrl}&text=${shareText}`;
+            document.getElementById('shareFacebook').href = `https://www.facebook.com/sharer/sharer.php?u=${currentUrl}`;
+
+            // ---------- 2. LIKE LOGIC (የላይክ ቁልፍ አሰራር) ----------
+            const likeBtn = document.getElementById('likeBtn');
+            const likeCountSpan = document.getElementById('likeCount');
+            const storageLikeKey = `likes_post_${postId}`;
+            
+            // የተሰጡ ላይኮችን ከብሮውዘር ላይ ማንበብ
+            let likes = parseInt(localStorage.getItem(storageLikeKey)) || 0;
+            likeCountSpan.textContent = likes;
+
+            likeBtn.addEventListener('click', () => {
+              likes += 1;
+              localStorage.setItem(storageLikeKey, likes);
+              likeCountSpan.textContent = likes;
+              // የክሊክ ማሳያ አኒሜሽን
+              likeBtn.classList.add('scale-110', 'text-red-500');
+              setTimeout(() => likeBtn.classList.remove('scale-110'), 200);
+            });
+
+            // ---------- 3. COMMENTS LOGIC (የአስተያየት መስጫ አሰራር) ----------
+            const commentForm = document.getElementById('commentForm');
+            const commentsList = document.getElementById('commentsList');
+            const storageCommentKey = `comments_post_${postId}`;
+
+            // የተጻፉ አስተያየቶችን አውጥቶ ማሳየት
+            function loadComments() {
+              const savedComments = JSON.parse(localStorage.getItem(storageCommentKey)) || [];
+              if (savedComments.length > 0) {
+                commentsList.innerHTML = '';
+                savedComments.forEach(comment => {
+                  const div = document.createElement('div');
+                  div.className = "bg-slate-100 dark:bg-slate-700 p-4 rounded-xl border border-slate-200 dark:border-slate-600";
+                  div.innerHTML = `
+                    <div class="flex justify-between items-center mb-1">
+                      <span class="font-bold text-sm text-slate-800 dark:text-white amharic">👤 ${comment.name}</span>
+                      <span class="text-xs text-slate-400">${comment.time}</span>
+                    </div>
+                    <p class="text-sm text-slate-700 dark:text-slate-300 amharic">${comment.text}</p>
+                  `;
+                  commentsList.appendChild(div);
+                });
+              }
+            }
+
+            loadComments();
+
+            // አዲስ አስተያየት ሲጻፍ ሴቭ ማድረግ
+            commentForm.addEventListener('submit', (e) => {
+              e.preventDefault();
+              const nameInput = document.getElementById('commenterName');
+              const textInput = document.getElementById('commentText');
+
+              const newComment = {
+                name: nameInput.value,
+                text: textInput.value,
+                time: new Date().toLocaleDateString('am-ET')
+              };
+
+              const savedComments = JSON.parse(localStorage.getItem(storageCommentKey)) || [];
+              savedComments.push(newComment);
+              localStorage.setItem(storageCommentKey, JSON.stringify(savedComments));
+
+              // ፎርሙን ማጽዳት እና አስተያየቱን ማሳየት
+              nameInput.value = '';
+              textInput.value = '';
+              loadComments();
+            });
+
           } else {
             postContainer.innerHTML = '<p class="text-center py-10 amharic text-red-500 font-semibold">ይቅርታ፣ የተፈለገው ዜና አልተገኘም።</p>';
           }
